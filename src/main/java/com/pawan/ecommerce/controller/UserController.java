@@ -3,6 +3,7 @@ package com.pawan.ecommerce.controller;
 
 import com.pawan.ecommerce.dto.LoginRequest;
 import com.pawan.ecommerce.dto.UserRequest;
+import com.pawan.ecommerce.model.ApiReponse;
 import com.pawan.ecommerce.model.User;
 import com.pawan.ecommerce.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +24,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/user")
 @Slf4j
+@CrossOrigin(value = "*")
 public class UserController {
 
     @Autowired
     private UserService userservice;
 
-    @CrossOrigin(value="*",allowedHeaders = "*")
+
     @PostMapping(value = "/create", produces = "application/json",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createUser(@RequestBody @Valid UserRequest userRequest, Errors errors) {
 
@@ -47,7 +49,7 @@ public class UserController {
             for(ObjectError objectError:err){
                 jsonArray.put(objectError.getDefaultMessage());
             }
-            jsonObject.put("status code",409);
+            jsonObject.put("status",409);
             jsonObject.put("error",jsonArray);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(jsonObject.toString());
 
@@ -57,11 +59,13 @@ public class UserController {
         if(user.isPresent()){
 
             jsonObject.put("status",409);
-            jsonObject.put("erroe",userRequest.getEmail()+" Email already exists");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(jsonObject.toString());
+            jsonObject.put("error",userRequest.getEmail()+" Email already exists");
+           // return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(jsonObject.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiReponse(409,"",userRequest.getEmail()+" Email already exists"));
+
         }
         userservice.createUser(userRequest);
-        return ResponseEntity.status(HttpStatus.OK).body("Sucessfully created User");
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiReponse(200,"User created successfully",""));
     }
 
 
@@ -81,7 +85,8 @@ public class UserController {
     public ResponseEntity<?> verifyaccount(@PathVariable String token){
 
         userservice.verifyaccount(token);
-        return ResponseEntity.status(HttpStatus.OK).body("Account activated successfully");
+       // return ResponseEntity.status(HttpStatus.OK).body("Account activated successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiReponse(200,"Account activated successfully",""));
 
 
   }
@@ -103,7 +108,14 @@ public class UserController {
     public ResponseEntity<?>loginUser(@RequestBody LoginRequest loginRequest) throws Exception {
 
       String jwt = userservice.login(loginRequest);
-      return ResponseEntity.status(HttpStatus.OK).body(jwt);
+      //return ResponseEntity.status(HttpStatus.OK).body(new ApiReponse(200,jwt,""));
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("message",jwt);
+        jsonObject.put("status",200);
+        jsonObject.put("username",loginRequest.getEmail());
+
+        return ResponseEntity.status(HttpStatus.OK).body(jsonObject.toString());
+
     }
 
 

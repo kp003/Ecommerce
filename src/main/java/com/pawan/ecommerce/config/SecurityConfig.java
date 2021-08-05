@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/user/**","/swagger-ui.html/**").permitAll().anyRequest().authenticated();
         //.anyRequest().authenticated()
         http.addFilterBefore(jwtFilters, UsernamePasswordAuthenticationFilter.class);
+        http.cors();
     }
 
     @Bean

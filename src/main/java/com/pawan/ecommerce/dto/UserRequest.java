@@ -16,11 +16,11 @@ public class UserRequest {
 
 
     @NotBlank(message="firstname cannot be blank")
-    @Size(min=5,max=10,message = ">=5 and <=10 for firstname length")
+    @Size(min=3,max=20,message = "first name should be greater than 3 letters and less than 20")
     private String firstname;
 
     @NotBlank(message="lastname cannot be blank")
-    @Size(min=5,max=10,message = ">=5 and <=10 for lasttname length")
+    @Size(min=2,max=20,message = "last name should be greater than 3 letters and less than 20")
     private String lastname;
 
     @NotBlank(message="email cannot be blank")

@@ -2,6 +2,7 @@ package com.pawan.ecommerce.controller;
 
 
 import com.pawan.ecommerce.dto.ProductRequest;
+import com.pawan.ecommerce.model.ApiReponse;
 import com.pawan.ecommerce.model.Product;
 import com.pawan.ecommerce.service.ProductService;
 import org.json.JSONObject;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/product")
+@CrossOrigin(value = "*")
 public class ProductController {
 
     @Autowired
@@ -41,17 +43,20 @@ public class ProductController {
     }
 
     @PutMapping("updateProduct/{id}")
-    public  void updateProduct(@PathVariable int id, @RequestBody ProductRequest productRequest){
+    public  ResponseEntity<?> updateProduct(@PathVariable int id, @RequestBody ProductRequest productRequest){
 
         Product product = productService.getproductbyID(id);
 
         productService.updateProduct(product,productRequest);
 
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiReponse(200,"Successfully updated",""));
+
     }
 
     @DeleteMapping("deleteProduct/{id}")
-    public void deleteProduct(@PathVariable int id){
+    public ResponseEntity<?>  deleteProduct(@PathVariable int id){
 
         productService.deleteProduct(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiReponse(200,"Successfully deleted",""));
     }
 }
