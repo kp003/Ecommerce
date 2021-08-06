@@ -5,7 +5,13 @@ import com.pawan.ecommerce.model.Product;
 import com.pawan.ecommerce.repo.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Service
@@ -13,6 +19,8 @@ public class ProductService {
 
     @Autowired
     ProductRepo productRepo;
+
+    private final String UPLOAD_PATH="/Users/pawankhadka/Downloads/ecommerce/src/main/resources/Images/";
 
     public void createproduct(ProductRequest productrequest) {
 
@@ -24,7 +32,22 @@ public class ProductService {
         product.setQuantity(productrequest.getQuantity());
         product.setCreated_by(productrequest.getCreated_by());
 
+
+        product.setImageURL(uploadImage(productrequest.getImage()));
+
         productRepo.save(product);
+    }
+
+    private String uploadImage(MultipartFile image) {
+        String imageURL="";
+        try {
+            Files.copy(image.getInputStream(), Paths.get(UPLOAD_PATH + File.pathSeparator + image.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+            imageURL=UPLOAD_PATH+File.pathSeparator+image.getOriginalFilename();
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+        return imageURL;
     }
 
     public List<Product> getAllProducts() {
