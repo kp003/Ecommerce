@@ -20,7 +20,7 @@ public class ProductService {
     @Autowired
     ProductRepo productRepo;
 
-    private final String UPLOAD_PATH="/Users/pawankhadka/Downloads/ecommerce/src/main/resources/Images/";
+    private final String UPLOAD_PATH="/Users/pawankhadka/Desktop/ecom-front/public/images/";
 
     public void createproduct(ProductRequest productrequest) {
 
@@ -41,8 +41,9 @@ public class ProductService {
     private String uploadImage(MultipartFile image) {
         String imageURL="";
         try {
-            Files.copy(image.getInputStream(), Paths.get(UPLOAD_PATH + File.pathSeparator + image.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
-            imageURL=UPLOAD_PATH+File.pathSeparator+image.getOriginalFilename();
+            Files.copy(image.getInputStream(), Paths.get(UPLOAD_PATH + File.separator + image.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+            // imageURL=UPLOAD_PATH+File.pathSeparator+image.getOriginalFilename();
+            imageURL=image.getOriginalFilename();
         }
         catch(IOException e){
             e.printStackTrace();
